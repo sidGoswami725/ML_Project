@@ -4,7 +4,7 @@ This repository contains the code and results for a machine learning project foc
 
 ## Project Goal
 
-The primary objective was to train, evaluate, and tune various regression models to accurately predict the `HotelValue` for properties listed in the `test.csv` dataset. The evaluation metric was Root Mean Squared Error (RMSE) on the Kaggle public leaderboard. A secondary goal was to explore different modeling techniques, preprocessing strategies, and hyperparameter tuning methods, documenting the findings as required by the course TAs.
+The primary objective was to train, evaluate, and tune various regression models to accurately predict the `HotelValue` for properties listed in the `test.csv` dataset, aiming for the best possible score on the Kaggle public leaderboard. A secondary goal was to explore different modeling techniques, preprocessing strategies, and hyperparameter tuning methods, documenting the findings as required by the course TAs.
 
 ## Dataset
 
@@ -27,34 +27,41 @@ The primary objective was to train, evaluate, and tune various regression models
     * Tuning was iteratively guided by **Kaggle leaderboard feedback** due to observed discrepancies between local CV scores and test set performance.
 3.  **Evaluation**:
     * Local performance measured using RMSLE (Root Mean Squared Logarithmic Error) via cross-validation.
-    * Final performance measured using RMSE on the Kaggle public leaderboard.
+    * Final performance measured based on scores obtained on the Kaggle public leaderboard.
 
 ## Models Implemented & Results
 
-The following models were trained and evaluated. The table summarizes the best Kaggle RMSE achieved for each approach after tuning:
+The following models were trained and evaluated. The table summarizes the best Kaggle score achieved for each approach after tuning:
 
-| Model Name             | Best Kaggle Score (RMSE) | Notes                                                                                       |
-| :--------------------- | :----------------------- | :------------------------------------------------------------------------------------------ |
+| Model Name             | Best Kaggle Score | Notes                                                                                       |
+| :--------------------- | :---------------- | :------------------------------------------------------------------------------------------ |
 | **Ridge Regression** | **18,322.343** | **Champion Model.** Best generalization achieved with `alpha=5` after iterative tuning.     |
-| Linear Regression    | 18,664.752               | Strong baseline using OneHot preprocessing.                                                 |
-| Lasso Regression     | 18,959.588               | Best score via manual R² tuning (`alpha=0.0006`). Less stable than Ridge.                 |
-| Gradient Boosting    | 21,554.736               | Best GB score required Ordinal/TE/Jitter (v3). OneHot preprocessing overfit badly (~30k). |
-| Polynomial Regression| 26,210.063               | Overfit severely. Ridge regularization didn't improve Kaggle score.                     |
-| XGBoost                | 29,708.691               | Overfit badly on Kaggle with OneHot preprocessing. Regularization didn't help.        |
-| Bagging Regressor    | 32,036.205               | Beat Decision Tree but overfit compared to linear models (using OneHot).                |
-| Random Forest        | 35,120.114               | Significant overfitting on Kaggle despite strong CV (using OneHot).                      |
-| AdaBoost               | 39,176.737               | Overfit significantly on Kaggle (using OneHot).                                             |
-| K-Nearest Neighbors  | 41,481.585               | Poor generalization, likely due to high dimensionality (262 features).                    |
-| Decision Tree        | 41,583.308               | Worst Kaggle score, confirming instability and overfitting.                                 |
+| Linear Regression    | 18,664.752        | Strong baseline using OneHot preprocessing.                                                 |
+| Lasso Regression     | 18,959.588        | Best score via manual R² tuning (`alpha=0.0006`). Less stable than Ridge.                 |
+| Gradient Boosting    | 21,554.736        | Best GB score required Ordinal/TE/Jitter (v3). OneHot preprocessing overfit badly (~30k). |
+| Polynomial Regression| 26,210.063        | Overfit severely. Ridge regularization didn't improve Kaggle score.                     |
+| XGBoost                | 29,708.691        | Overfit badly on Kaggle with OneHot preprocessing. Regularization didn't help.        |
+| Bagging Regressor    | 32,036.205        | Beat Decision Tree but overfit compared to linear models (using OneHot).                |
+| Random Forest        | 35,120.114        | Significant overfitting on Kaggle despite strong CV (using OneHot).                      |
+| AdaBoost               | 39,176.737        | Overfit significantly on Kaggle (using OneHot).                                             |
+| K-Nearest Neighbors  | 41,481.585        | Poor generalization, likely due to high dimensionality (262 features).                    |
+| Decision Tree        | 41,583.308        | Worst Kaggle score, confirming instability and overfitting.                                 |
 
 **Key Finding**: Simple, well-regularized linear models (Ridge) demonstrated superior generalization compared to complex tree-based ensembles, which tended to overfit the training data despite strong local CV scores. Careful, leaderboard-guided tuning was essential.
 
 ## Repository Structure
 
-* `/` (root): Contains Python scripts for each model/experiment (e.g., `RidgeReg_v4.py`, `tune_gb_stochastic.py`, `GradBoost_v3.py`).
-* `/data/`: Contains the `train.csv`, `test.csv`, and `sample_submission.csv` files.
-* `/submissions/`: Contains the corresponding output `.csv` files generated by the scripts.
+* `/` (root):
+    * Contains the initial Python scripts for each of the 11 models (e.g., `RidgeRegression.py`, `GradientBoosting.py`).
+    * Contains the initial submission `.csv` files corresponding to these scripts.
+    * Contains `train.csv`, `test.csv`, and `sample_submission.csv`.
+* `/RidgeRegImprov/`: Contains iterative tuning scripts for Ridge Regression (`v1` to `v5`) and their corresponding submission `.csv` files.
+* `/LassoRegImprov/`: Contains iterative tuning scripts for Lasso Regression (`v1` to `v3`, `friend_method`) and their corresponding submission `.csv` files.
+* `/PolyRegImprov/`: Contains tuning scripts for Polynomial Regression (`v1`, `v2`) and their corresponding submission `.csv` files.
+* `/GradBoostImprov/`: Contains alternative/tuned Gradient Boosting scripts (`v1` to `v3`, `stochastic`) and their corresponding submission `.csv` files.
 * `README.md`: This file.
+
+*(Note: Add/modify subfolder names like `/XGBoostImprov/` if you performed iterative tuning for other models)*
 
 ## How to Run
 
@@ -63,6 +70,7 @@ The following models were trained and evaluated. The table summarizes the best K
     ```bash
     pip install pandas numpy scikit-learn xgboost
     ```
-3.  Place `train.csv` and `test.csv` in the `/data/` directory (or modify paths in scripts).
-4.  Run the desired Python script from the root directory (e.g., `python RidgeReg_v4.py`).
-5.  The script will perform preprocessing, tuning (if applicable), train the final model, and save the submission file to the `/submissions/` directory.
+3.  The `train.csv` and `test.csv` files are in the root directory.
+4.  Navigate to the desired folder (root or a subfolder like `RidgeRegImprov`).
+5.  Run the chosen Python script (e.g., `python ../RidgeReg_v4.py` if running from root, or `python RidgeReg_v4.py` if inside the subfolder).
+6.  The script will perform preprocessing, tuning (if applicable), train the final model, and save the submission file (usually within the same folder or potentially a specified output path).
