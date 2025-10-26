@@ -1,0 +1,6 @@
+Start by adding regularization (Ridge, Lasso, Elastic Nets) to the Linear
+Regression code.
+
+Now we can't really work with LinearRegression anymore, so we will have to start 
+tuning the next best model (Ridge Regression) to see an improvement in scores and
+so on.
